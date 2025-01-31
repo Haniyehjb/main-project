@@ -405,6 +405,9 @@ void move_character(char mat[][64]) {
     while (1) {
         char ch;
         ch = _getch();
+        if(mat[char_i][char_j] == '9'){
+            win_game1();
+        }
         if (ch == 'd' && char_j < 64 &&
             (mat[char_i][char_j + 1] == ' ' || mat[char_i][char_j + 1] == '(' || mat[char_i][char_j + 1] == '9' ||
              mat[char_i][char_j + 1] == '3' ||
@@ -442,9 +445,16 @@ void move_character(char mat[][64]) {
                    (mat[char_i][char_j + 1] == ' ' || mat[char_i][char_j + 1] == '(' || mat[char_i][char_j + 1] == '9' ||
                     mat[char_i][char_j + 1] == '3' ||
                     mat[char_i][char_j + 1] == '#' || mat[char_i][char_j + 1] == '^')) {
-            mat_1[char_i + 1][char_j] = ' ';
-            char_i++;
-            mat_1[char_i][char_j] = '#';
+            if ( mat_1[char_i][char_j + 1] == '3')
+            {
+                coins += 1;
+            }
+            if (mat_1[char_i][char_j - 1] != '1')
+            {
+                mat_1[char_i][char_j] = ' ';
+                char_j--;
+                mat_1[char_i][char_j] = '#';
+            }
         }
 
         if (ch == 'w' && char_i > 0 &&
@@ -454,6 +464,10 @@ void move_character(char mat[][64]) {
             mat_1[char_i - 4][char_j] = ' ';
             char_i -= 4;
             mat_1[char_i][char_j] = '#';
+            if ( mat_1[char_i][char_j + 1] == '3')
+            {
+                coins += 1;
+            }
             char ch;
             ch = _getch();
 
