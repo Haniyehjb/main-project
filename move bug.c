@@ -599,7 +599,7 @@ void coins_score (char mat[][64]){
 }
 void gamee_over(){
     lose ++ ;
-
+    system("cls");
     printf("\033[1;31mGAME OVER !\033[0m\n");
     printf("\033[1;31mYOU LOSE \033[0m\n");
     printf("YOUR SCORE : %d \n YOUR COINS : %d" , score , coins);
@@ -1035,7 +1035,7 @@ void win_game1(){////////////////////
     wins++;
 
     int num;
-
+    system("cls");
     printf("\033[1;32mYOU HAVE SUCCESSFULLY COMPLETED THIS LEVEL!\033[0m\n");
     printf("YOUR COINS : %d \n YOUR SCORE : %d" , coins , score);
     printf("\033[1;32m1.GOING TO NEXT LEVEL\033[0m\n");
