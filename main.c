@@ -57,12 +57,12 @@ char mat_2[28][64] = {
 
 };
 
-
+int is_logged = 0;
 int wins = 0 , lose = 0 ;
 int hit_status = 0 ;
 int score = 0;
 int coins = 0 ;
-int heart;
+int heart = 3;
 int is_double;
 int reminder_time;
 int game_over = 0 ;
@@ -233,6 +233,7 @@ void sign_in(const char* name, const char* email, const char* password) {
         if (strcmp(pTmp->player.name, name) == 0) {
             if (strcmp(pTmp->player.password, password) == 0) {
                 printf("Login successful!\n");
+                is_logged = 1 ;
                 return;
             } else {
                 printf("Wrong password.\n");
@@ -405,6 +406,9 @@ void move_character(char mat[][64]) {
     while (1) {
         char ch;
         ch = _getch();
+        if(mat_1[char_i][char_j] == '9'){
+            win_game1();
+        }
         if (ch == 'd' && char_j < 64 &&
             (mat[char_i][char_j + 1] == ' ' || mat[char_i][char_j + 1] == '(' || mat[char_i][char_j + 1] == '9' ||
              mat[char_i][char_j + 1] == '3' ||
@@ -451,9 +455,9 @@ void move_character(char mat[][64]) {
             (mat[char_i][char_j + 1] == ' ' || mat[char_i][char_j + 1] == '(' || mat[char_i][char_j + 1] == '9' ||
              mat[char_i][char_j + 1] == '3' || mat[char_i][char_j + 1] == '#' || mat[char_i][char_j + 1] == '^' ||
              mat[char_i][char_j] == 5)) {
-            mat_1[char_i - 4][char_j] = ' ';
+            mat_1[char_i][char_j] = ' ';
             char_i -= 4;
-            mat_1[char_i][char_j] = '#';
+            mat_1[char_i - 4][char_j] = '#';
             char ch;
             ch = _getch();
 
@@ -738,6 +742,11 @@ int main() {
 
                 if (get_password(password, sizeof(password)) == 0) {
                     sign_in(name, email, password);
+                    lets_start();
+                    print_grid1();
+                    move_character(mat_1);
+
+
                 }
                 break;
 
@@ -760,9 +769,16 @@ int main() {
                 break;
 
             case '5':
-                lets_start();
-                print_grid1();
-                move_character(mat_1);
+                if (is_logged == 1){
+                    lets_start();
+                    print_grid1();
+                    move_character(mat_1);
+                }
+                else{
+                    printf("PLEASE LOG IN FIRST");
+                    Sleep(2000);
+                }
+
 
                 break;
 
@@ -1024,6 +1040,9 @@ void double_mario(char mat[][64] ){
 
 }
 void win_game1(){////////////////////
+    lets_start();
+    print_grid1();
+    move_character(mat_1);
     wins++;
 
     int num;
