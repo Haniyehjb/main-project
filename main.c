@@ -179,7 +179,7 @@ int get_password(char *password, int max_length) {
 }
 
 // تابع ثبت نام کاربر
-int add_gamer(const char* name, const char* email, const char* password) {
+/*int add_gamer(const char* name, const char* email, const char* password) {
     struct allgamer *pTmp, *pNew = (struct allgamer*)malloc(sizeof(struct allgamer));
     pNew->player.name = strdup(name);
     pNew->player.email = strdup(email);
@@ -224,8 +224,73 @@ int add_gamer(const char* name, const char* email, const char* password) {
 
     printf("Registration successful!\n");
     return 0;
-}
+}*/
+int add_gamer(const char* name, const char* email, const char* password) {
+    struct allgamer *pTmp = pHead; // Initialize pTmp to pHead
+    struct allgamer *pNew = (struct allgamer*)malloc(sizeof(struct allgamer));
 
+    // Check if memory allocation failed
+    if (pNew == NULL) {
+        printf("Error: Memory allocation failed.\n");
+        return -1;
+    }
+
+    // Initialize the new player
+    pNew->player.name = strdup(name);
+    pNew->player.email = strdup(email);
+    pNew->player.password = strdup(password);
+    pNew->player.wins = 0;
+    pNew->player.lose = 0;
+    pNew->player.coins = 0;
+    pNew->pNext = NULL;
+
+    // Check if the name is already taken
+    while (pTmp != NULL) {
+        if (strcmp(pTmp->player.name, name) == 0) {
+            printf("Error: Name '%s' is already taken. Please try again.\n", name);
+            // Free allocated memory to avoid memory leak
+            free(pNew->player.name);
+            free(pNew->player.email);
+            free(pNew->player.password);
+            free(pNew);
+            return -1;
+        }
+        pTmp = pTmp->pNext;
+    }
+
+    // Insert the new player into the linked list
+    if (pHead == NULL) {
+        // If the list is empty, make pNew the head
+        pHead = pNew;
+    } else {
+        // Traverse to the end of the list and add pNew
+        pTmp = pHead;
+        while (pTmp->pNext != NULL) {
+            pTmp = pTmp->pNext;
+        }
+        pTmp->pNext = pNew;
+    }
+
+    // Save the player's data to a file
+    FILE *file;
+    char filename[100];
+    sprintf(filename, "%s.txt", name);
+    file = fopen(filename, "w");
+    if (file != NULL) {
+        fprintf(file, "Name: %s\nEmail: %s\nPassword: %s\nWins: %d\nLose: %d\nCoins: %d\n",
+                name, email, password, pNew->player.wins, pNew->player.lose, pNew->player.coins);
+        fclose(file);
+    } else {
+        perror("Error opening file");
+        return -1;
+    }
+
+    // Save all players to the main file
+    save_all_players();
+
+    printf("Registration successful!\n");
+    return 0;
+}
 // تابع ورود به سیستم
 void sign_in(const char* name, const char* email, const char* password) {
     struct allgamer *pTmp = pHead;
@@ -446,7 +511,7 @@ void move_character(char mat[][64]) {
                  (mat[char_i][char_j + 1] == ' ' || mat[char_i][char_j + 1] == '(' || mat[char_i][char_j + 1] == '9' ||
                   mat[char_i][char_j + 1] == '3' ||
                   mat[char_i][char_j + 1] == '#' || mat[char_i][char_j + 1] == '^')) {
-            mat_1[char_i + 1][char_j] = ' ';
+            mat_1[char_i][char_j] = ' ';
             char_i++;
             mat_1[char_i][char_j] = '#';
         }
@@ -600,6 +665,11 @@ void gamee_over(){
 void end_game_for_time_or_heart(){
     if(heart == 0 || time_left == 0){
         gamee_over();
+    }
+}
+void win (){
+    if(mat_1[char_i][char_j] == '9'){
+        win_game1();
     }
 }
 void print_grid1()
@@ -773,6 +843,7 @@ int main() {
                     lets_start();
                     print_grid1();
                     move_character(mat_1);
+
                 }
                 else{
                     printf("PLEASE LOG IN FIRST");
